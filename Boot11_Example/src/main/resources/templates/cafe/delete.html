@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>/cafe/delete.html</title>
+</head>
+<body>
+<div class="container">
+		<div class="card w-50 mt-5">
+		
+			<div class="card-body">
+				<h5 class="card-title">알림</h5>
+				<p class="card-text"><strong sec:authentication="name"></strong></p> 님이 작성한 기존 글을 삭제
+				<a class="btn btn-primary" th:href="@{/cafe/list}">확인</a>
+			</div>
+			
+		</div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>templates/web.html</title>
+</head>
+<body>
+<div class="container">
+		<h1>인덱스 페이지 입니다</h1>
+		<p>
+			오늘의 날씨 : <strong>[[${weatherToday}]]</strong> 
+		</p>
+		<p>
+			오늘의 날씨 : <strong th:text="${weatherToday}"></strong>
+		</p>
+</div>
+</body>
+</html>

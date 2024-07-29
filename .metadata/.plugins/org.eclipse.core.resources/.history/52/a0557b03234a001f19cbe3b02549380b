@@ -1,0 +1,108 @@
+package com.example.boot11.service;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.List;
+import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.example.boot11.dto.CafeDto;
+import com.example.boot11.dto.GalleryCommentDto;
+import com.example.boot11.dto.GalleryDto;
+import com.example.boot11.repository.GalleryCommentDao;
+import com.example.boot11.repository.GalleryDao;
+
+@Service
+public class GalleryServiceImpl implements GalleryService{
+
+	@Autowired private GalleryDao galleryDao;
+	
+	@Value("${file.location}")
+	private String fileLocation;
+	
+	@Override
+	public void getList(Model model, GalleryDto dto) {
+	
+	}
+	@Override
+	public void saveContent(GalleryDto dto) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void getDetail(Model model, GalleryDto dto) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void deleteContent(int num) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void getData(Model model, int num) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void updateContent(GalleryDto dto) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void saveComment(GalleryCommentDto dto) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void deleteComment(int num) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void updateComment(GalleryCommentDto dto) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void getCommentList(Model model, GalleryCommentDto dto) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public String saveImage(MultipartFile image) {
+		  if (image.isEmpty()) {
+	            return null;
+	        }
+
+	        String originalFilename = image.getOriginalFilename();
+	        String saveFileName = generateUniqueFileName(originalFilename);
+
+	        try {
+	           
+	            Path uploadPath = Paths.get(fileLocation);
+
+	            if (!Files.exists(uploadPath)) {
+	                Files.createDirectories(uploadPath);
+	            }
+
+	            try (var inputStream = image.getInputStream()) {
+	                Path filePath = uploadPath.resolve(saveFileName);
+	                Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+	            }
+
+	            return saveFileName;
+	        } catch (IOException e) {
+	            throw new RuntimeException("Failed to save image file", e);
+	        }
+	    }
+	}
+

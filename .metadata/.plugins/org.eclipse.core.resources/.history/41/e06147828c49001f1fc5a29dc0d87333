@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="gallery">
+
+<sql id="column">
+		num,writer,saveFileName,caption, TO_CHAR(regdate, 'YYYY.MM.DD HH24:MI') AS regdate
+	</sql>
+
+<update id="update" parameterType="galleryDto">
+		UPDATE board_gallery
+		SET saveFileName=#{saveFileName}, caption=#{caption}
+		WHERE num=#{num}
+	</update>
+
+	<delete id="delete" parameterType="int">
+		DELETE FROM board_gallery
+		WHERE num=#{num}
+	</delete>
+	
+	<select id="getData" parameterType="int" resultType="galleryDto">
+		SELECT <include refid="column"/>
+		FROM board_gallery
+		WHERE num=#{num}
+	</select>
+	<!--
+		parameter 로 전달되는 CafeDto 에는 검색 keyword 가 있을 수 있다.
+		keyword 가 있다면 keyword 에 해당하는 글 목록중에서 이전글의 글번호와 다음글의 글번호를  select 해야한다.
+	  -->
+	<select id="getDetail" parameterType="galleryDto" resultType="galleryDto">
+		SELECT *
+		FROM
+			(SELECT <include refid="column"/>, 
+				LAG(num, 1, 0) OVER (ORDER BY num DESC) AS prevNum,
+				LEAD(num, 1, 0) OVER (ORDER BY num DESC) AS nextNum
+			FROM board_gallery
+			<include refid="search"/> ) result1
+		WHERE num=#{num}
+	</select>
+
+	<insert id="insert" parameterType="galleryDto">
+		INSERT INTO board_gallery
+		(num, writer, saveFileName, caption, regdate)
+		VALUES(board_gallery_seq.NEXTVAL, #{writer}, #{saveFileName}, #{caption}, SYSDATE)
+	</insert>
+
+	<select id="getCount" resultType="int" parameterType="galleryDto">
+		SELECT NVL(MAX(ROWNUM), 0)
+		FROM board_gallery
+		<include refid="search"/>
+	</select>
+
+	<select id="getList" parameterType="galleryDto" resultType="galleryDto">
+		SELECT *
+		FROM
+			(SELECT result1.*, ROWNUM AS rnum
+			FROM 
+				(SELECT <include refid="column"/>
+				FROM board_gallery
+				<include refid="search"/>
+				ORDER BY num DESC) result1)
+		WHERE rnum BETWEEN #{startRowNum} AND #{endRowNum}
+	</select>
+</mapper>

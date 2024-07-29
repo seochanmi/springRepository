@@ -1,0 +1,23 @@
+package com.example.boot11.repository;
+
+import java.util.List;
+
+import com.example.boot11.dto.CafeDto;
+import com.example.boot11.dto.GalleryDto;
+
+public interface GalleryDao {
+	//pageNum 과 검색조건에 해당하는 갤러리 사진 목록을 리턴하는 메소드
+		public List<GalleryDto> getList(GalleryDto dto);
+		//검색 조건에 해당하는 갤러리 사진의 갯수를 리턴하는 메소드
+		public int getCount(GalleryDto dto);
+		//글 추가
+		void insert(GalleryDto dto);
+		//글번호에 해당하는 갤러리 사진 정보 리턴하는 메소드
+		public GalleryDto getData(int num);
+		//검색조건과 글번호를 GalleryDto에 담아서 전달하면 갤러리사진하나의 정보를 리턴하는 메소드(이전글의 글번호, 다음글의 글번호 포함)
+		public GalleryDto getDetail(GalleryDto dto);
+		//갤러리사진 삭제
+		public void delete(int num);
+		//갤러리사진 수정
+		public void update(GalleryDto dto);
+	}

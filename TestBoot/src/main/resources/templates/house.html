@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>templates/house.html</title>
+</head>
+<body>
+	<!--  웹브라우저가 무시하는 주석입니다 -->
+	<!--  /* Thymeleaf 가 무시하는 주석 */ -->
+<div class="container">
+		<h1>인덱스 페이지 입니다</h1>
+		<p>
+			오늘의 날씨 : <strong>[[${weatherToday}]]</strong> 
+		</p>
+		<p>
+			오늘의 날씨 : <strong th:text="${weatherToday}"></strong>
+		</p>
+		<ul>
+			<li><a href="/testboot/sub/rest">쉬기</a></li>	
+			<li><a th:href="%{/sub/rest)">쉬기</a></li>
+			<li><a th:href="@{/alarm}">알림사항</a></li>	
+		</ul>
+	</div>
+</body>
+</html>

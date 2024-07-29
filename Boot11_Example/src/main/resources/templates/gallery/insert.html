@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>/gallery/insert.html</title>
+</head>
+<body>
+	<div class="container">
+		<h3>알림</h3>
+		<p>
+		파일이 저장 되었습니다.	
+		<a th:href="@{/gallery/list}">목록보기</a>
+		</p>
+		<p> 저장된 이미지명: <strong th:text="${saveFileName}"></strong></p>
+		<p> 실제 이미지: <img th:src="@{/gallery/images/'+${saveFileName}}"/></p>
+	</div>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>/gallery/detail.html</title>
+<title>갤러리 상세 페이지입니다</title>
+</head>
+<body>
+    <h1>갤러리 상세 페이지</h1>
+    <div>
+        <p>이미지번호: <span th:text="${image.num}"></span></p>
+        <p>작성자: <span th:text="${image.writer}"></span></p>
+        <p>이미지명: <span th:text="${image.saveFileName}"></span></p>
+        <p>이미지설명: <span th:text="${image.caption}"></span></p>
+        <p>업로드일: <span th:text="${image.regdate}"></span></p>
+        <img th:src="@{/images/{fileName}(fileName=${image.saveFileName})}" alt="이미지">
+    </div>
+    <a href="/boot11/gallery/list">목록으로 돌아가기</a>
+</body>
+</html>

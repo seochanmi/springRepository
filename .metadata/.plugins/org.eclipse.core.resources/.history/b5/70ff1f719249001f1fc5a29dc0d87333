@@ -1,0 +1,19 @@
+package com.example.boot11.controller;
+
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+
+import com.example.boot11.dto.CafeDto;
+import com.example.boot11.dto.GalleryDto;
+
+public class GalleryController {
+
+	@GetMapping("/gallery/list")
+	public String list(Model model, GalleryDto dto) {
+		//pageNum 또는 keyword 가 파라미터로 전달된다면 dto 에 들어있다.
+		//service.getList(model, dto);
+		
+		//templates/gallery/list.html 타임리프 페이지에서 응답
+		return "gallery/list";
+	}
+}

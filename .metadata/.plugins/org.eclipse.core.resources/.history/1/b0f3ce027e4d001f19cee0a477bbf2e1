@@ -1,0 +1,5 @@
+package com.example.boot12.util;
+
+public class JWTUtil {
+
+}

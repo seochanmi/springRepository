@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="post">
+	<select id="getData" parameterType="int" resultType="com.example.boot10.dto.PostDto">
+		select id, title, author
+		from board_post
+		where id=#{id}
+	</select>
+
+	<select id="getList" resultType="com.example.boot10.dto.PostDto">
+		SELECT id, title, author
+		FROM board_post
+		ORDER BY id ASC
+	</select>
+	
+	<insert id="insert" parameterType="com.example.boot10.dto.PostDto">
+		insert into board_post
+		(id, title, author)
+		values (#{id}, #{title}, #{author})
+	</insert>
+	
+	<update id="update" parameterType="com.example.boot10.dto.PostDto">
+		update board_post
+		set title=#{title}, author=#{author}
+		where id=${id}
+	</update>
+	
+	<delete id="delete" parameterType="int">
+		delete from board_post
+		where id=#{id}
+	</delete>
+
+	<select id="getSequence" resultType="int">
+		select board_post_seq.NEXTVAL
+		FROM DUAL
+	</select>
+</mapper>

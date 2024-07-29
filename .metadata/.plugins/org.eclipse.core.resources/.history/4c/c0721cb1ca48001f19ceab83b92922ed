@@ -1,0 +1,3 @@
+<li th:each="tmp:${commentList}" th:id="'reli'+${tmp.num}">
+	여기에 댓글하나의 정보를 출력할 예정
+</li>

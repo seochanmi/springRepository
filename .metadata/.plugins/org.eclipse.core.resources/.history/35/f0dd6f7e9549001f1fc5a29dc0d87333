@@ -1,0 +1,15 @@
+package com.example.boot11.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.example.boot11.dto.GalleryCommentDto;
+import com.example.boot11.repository.GalleryCommentDao;
+import com.example.boot11.repository.GalleryDao;
+
+@Service
+public class GalleryServiceImpl {
+
+	@Autowired private GalleryDao galleryDao;
+	@Autowired private GalleryCommentDao commentDao;
+}

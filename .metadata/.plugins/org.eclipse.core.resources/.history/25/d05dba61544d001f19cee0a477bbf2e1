@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>/gallery/upload_form.html</title>
+    <style>
+        #dropZone {
+            width: 300px;
+            height: 200px;
+            border: 2px dashed #ccc;
+            border-radius: 5px;
+            text-align: center;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        #previewImage {
+            max-width: 100%;
+            max-height: 180px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>이미지 업로드 폼</h1>
+    <form th:action="@{/gallery/upload}" method="post" enctype="multipart/form-data" id="uploadForm">
+        <div>
+            <label for="caption">설명</label>
+            <input type="text" name="caption" id="caption" />
+        </div>
+        <div>
+            <label for="image">이미지</label>
+            <input type="file" name="image" id="image" accept="image/*" style="display:none;" />
+        </div>
+        <div id="dropZone">
+            이미지를 여기에 드래그하거나 클릭하여 선택하세요
+            <img id="previewImage" src="" alt="미리보기" />
+        </div>
+        <button type="submit">업로드</button>
+    </form>
+</div>
+
+<script>
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('image');
+    const previewImage = document.getElementById('previewImage');
+
+    // 드롭존 클릭 시 파일 선택 다이얼로그 열기
+    dropZone.addEventListener('click', () => fileInput.click());
+
+    // 파일이 선택되었을 때
+    fileInput.addEventListener('change', handleFiles);
+
+    // 드래그 오버 이벤트
+    dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropZone.style.backgroundColor = '#e1e1e1';
+    });
+
+    // 드래그 리브 이벤트
+    dropZone.addEventListener('dragleave', (e) => {
+        e.preventDefault();
+        dropZone.style.backgroundColor = '';
+    });
+
+    // 드롭 이벤트
+    dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.style.backgroundColor = '';
+        const files = e.dataTransfer.files;
+        fileInput.files = files;
+        handleFiles();
+    });
+
+    function handleFiles() {
+        const files = fileInput.files;
+        if (files.length > 0) {
+            const file = files[0];
+            if (file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    previewImage.src = e.target.result;
+                    previewImage.style.display = 'block';
+                    dropZone.textContent = ''; // 텍스트 제거
+                    dropZone.appendChild(previewImage);
+                };
+                reader.readAsDataURL(file);
+            } else {
+                alert('이미지 파일만 업로드할 수 있습니다.');
+                fileInput.value = '';
+                resetDropZone();
+            }
+        }
+    }
+    function resetDropZone() {
+    	dropZone.innerHtml = '이미지를 여기에 드래그하거나 클릭하여 선택하세요';
+    	previewImage.style.display = 'none';
+    	previewImage.src = '';
+    }
+    
+    uploadForm.addEventListener('submit', (e) =>{
+    	 e.preventDefault();
+         if (fileInput.files.length === 0) {
+             alert('이미지를 선택해주세요.');
+             return;
+         }
+         // 여기에 실제 업로드 로직을 추가하세요.
+         uploadForm.submit();
+     });
+ </script>
+ </body>
+ </html>

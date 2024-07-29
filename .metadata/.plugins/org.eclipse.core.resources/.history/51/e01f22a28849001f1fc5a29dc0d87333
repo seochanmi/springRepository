@@ -1,0 +1,22 @@
+package com.example.boot11.dto;
+
+import org.apache.ibatis.type.Alias;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Alias("galleryDto") // mapper xml 문서에서 GalleryDto type 을 별칭을 이용해서 사용할수 있다. 
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
+public class GalleryDto {
+	int num;
+	String writer;
+	String caption;
+	String saveFileName;
+	String regdate;
+	
+}

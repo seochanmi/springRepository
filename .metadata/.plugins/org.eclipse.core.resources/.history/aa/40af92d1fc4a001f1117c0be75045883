@@ -1,0 +1,143 @@
+package com.example.boot11.service;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.List;
+import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
+import org.springframework.web.multipart.MultipartFile;
+
+
+import com.example.boot11.dto.GalleryCommentDto;
+import com.example.boot11.dto.GalleryDto;
+import com.example.boot11.repository.GalleryCommentDao;
+import com.example.boot11.repository.GalleryDao;
+
+@Service
+public class GalleryServiceImpl implements GalleryService{
+
+	@Autowired private GalleryDao galleryDao;
+	
+	@Value("${file.location}")
+	private String fileLocation;
+	
+	final int PAGE_ROW_COUNT = 8;
+	final int PAGE_DISPLAY_COUNT = 5;
+	
+	
+	@Override
+	public void getList(Model model, GalleryDto dto) {
+		int pageNum = dto.getPageNum();
+		int startRowNum = 1+ (pageNum-1) * PAGE_ROW_COUNT;
+		int endRowNum = pageNum * PAGE_ROW_COUNT;
+		
+		int startPageNum = 1 + ((pageNum-1)/PAGE_DISPLAY_COUNT) * PAGE_DISPLAY_COUNT;
+        int endPageNum = startPageNum + PAGE_DISPLAY_COUNT - 1;
+        int totalRow = galleryDao.getCount(dto);
+        int totalPageCount = (int)Math.ceil(totalRow / (double)PAGE_ROW_COUNT);
+        if(endPageNum > totalPageCount){
+            endPageNum = totalPageCount;
+        }
+        dto.setStartRowNum(startRowNum);
+        dto.setEndRowNum(endRowNum);
+        
+        List<GalleryDto> list = galleryDao.getList(dto);
+        
+        model.addAttribute("list", list);
+        model.addAttribute("startPageNum", startPageNum);
+        model.addAttribute("endPageNum", endPageNum);
+        model.addAttribute("totalPageCount", totalPageCount);
+        model.addAttribute("pageNum", pageNum);
+        model.addAttribute("totalRow", totalRow);
+        
+	}
+	@Override
+	public void saveContent(GalleryDto dto) {
+		galleryDao.insert(dto);
+      
+    }
+	
+		
+	
+	@Override
+	public void deleteContent(int num) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void getData(Model model, int num) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void updateContent(GalleryDto dto) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void saveComment(GalleryCommentDto dto) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void deleteComment(int num) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void updateComment(GalleryCommentDto dto) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void getCommentList(Model model, GalleryCommentDto dto) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public String saveImage(MultipartFile image) {
+		  if (image.isEmpty()) {
+	            return null;
+	        }
+
+	        String originalFilename = image.getOriginalFilename();
+	        String saveFileName = generateUniqueFileName(originalFilename);
+
+	        try {
+	           
+	            Path uploadPath = Paths.get(fileLocation);
+
+	            if (!Files.exists(uploadPath)) {
+	                Files.createDirectories(uploadPath);
+	            }
+
+	            try (var inputStream = image.getInputStream()) {
+	                Path filePath = uploadPath.resolve(saveFileName);
+	                Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+	            }
+
+	            return saveFileName;
+	        } catch (IOException e) {
+	            throw new RuntimeException("Failed to save image file", e);
+	        }
+	    }
+
+	    private String generateUniqueFileName(String originalFilename) {
+	        return UUID.randomUUID().toString() + "_" + originalFilename;
+	    }
+		@Override
+		public void getDetail(Model model, GalleryDto dto) {
+			// TODO Auto-generated method stub
+			
+		}
+
+	}
+

@@ -1,0 +1,57 @@
+package com.example.boot11.repository;
+
+import java.util.List;
+
+import org.apache.ibatis.session.SqlSession;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import com.example.boot11.dto.GalleryDto;
+
+@Repository
+public class GalleryDaoImpl implements GalleryDao{
+	@Autowired private SqlSession session;
+
+	@Override
+	public List<GalleryDto> getList(GalleryDto dto) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int getCount(GalleryDto dto) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void insert(GalleryDto dto) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public GalleryDto getData(int num) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public GalleryDto getDetail(GalleryDto dto) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void delete(int num) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void update(GalleryDto dto) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+}

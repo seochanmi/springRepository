@@ -1,0 +1,5 @@
+spring.application.name=Boot12_JWT
+
+server.port=8888
+server.servlet.context-path=/boot12
+

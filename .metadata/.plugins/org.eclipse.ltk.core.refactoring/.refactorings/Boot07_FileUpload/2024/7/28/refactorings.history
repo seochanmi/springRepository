@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Copy element &apos;custom.properties&apos; to &apos;Boot11_Example/src/main/resources&apos;&#x0D;&#x0A;- Original project: &apos;Boot07_FileUpload&apos;&#x0D;&#x0A;- Destination element: &apos;Boot11_Example/src/main/resources&apos;&#x0D;&#x0A;- Original element: &apos;custom.properties&apos;" description="Copy file" destination="=Boot11_Example/src\/main\/resources=/maven.pomderived=/true=/=/optional=/true=/" element1="src/main/resources/custom.properties" files="1" flags="589830" folders="0" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyResources" stamp="1720764182760" units="0" version="1.0"/>
+</session>

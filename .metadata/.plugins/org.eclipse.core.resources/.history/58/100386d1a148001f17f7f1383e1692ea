@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>/cafe/detail.html</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+<style>
+	.content{
+		border-radius: 5px;
+		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+	}
+	/* 댓글 프로필 이미지를 작은 원형으로 만든다. */
+	.profile-image{
+		width: 50px;
+		height: 50px;
+		border: 1px solid #cecece;
+		border-radius: 50%;
+	}
+	/* ul 요소의 기본 스타일 제거 */
+	.comments ul{
+		padding: 0;
+		margin: 0;
+		list-style-type: none;
+	}
+	.comment-form, .re-insert-form{
+		display: flex;
+	}
+	
+	.comment-form textarea, .re-insert-form textarea{
+		height: 100px;
+		flex-grow: 1;
+	}
+	
+	.comment-form button, .re-insert-form button{
+		flex-basis: 100px;
+	}
+	/* 대댓글폼은 일단 숨겨 놓는다 */
+	.re-insert-form{
+		display: none;
+	}
+</style>
+</head>
+<body>
+	<div class="container">
+		<a th:if="${dto.prevNum ne 0}" th:href="@{/cafe/detail(num=${dto.prevNum}, condition=${dto.condition}, keyword=${dto.keyword})}">이전글</a> 
+		<a th:if="${dto.nextNum ne 0}" th:href="@{/cafe/detail(num=${dto.NextNum}, condition=${dto.condition}, keyword=${dto.keyword})}">다음글</a>
+		
+		<p th:if="${not #strings.isEmpty(dto.keyword)}">
+			<strong>[[${dto.condition}]]</strong> 조건
+			<strong>[[${dto.keyword}]]</strong> 검색어로 검색된 내용 
+		</p>
+	
+		<h3>글 상세 보기</h3>
+		<table class="table table-bordered" >
+			<tr>
+				<th>글번호</th>
+				<td>[[${dto.num}]]</td>
+			</tr>
+			<tr>
+				<th>작성자</th>
+				<td>[[${dto.writer}]]</td>
+			</tr>
+			<tr>
+				<th>제목</th>
+				<td>[[${dto.title}]]</td>
+			</tr>
+			<tr>
+				<th>조회수</th>
+				<td>[[${dto.viewCount}]]</td>	
+			</tr>
+			<tr>
+				<th>작성일</th>
+				<td th:text="${dto.regdate}"></td>
+			</tr>
+		</table>
+		<div class="content">[(${dto.content})]</div>
+		<div class="content" th:utext="${dto.content}"></div>
+		<th:block th:if="${dto.writer eq session.userName}">
+			<a class="btn btn-outline-success btn-sm" th:href="@{'/cafe/updateform?num=' + ${dto.num}}">수정</a>
+			<a class="btn btn-outline-danger btn-sm" href="javascript:" onclick="deleteConfirm()">삭제</a>
+			<script th:inline="javascript">
+				//thymeleaf 가 아래의 javascript 를 어떻게 출력했는지 확인해 보세요.
+				let dto=[[${dto}]];
+				let contextPath=[[@{/}]];
+				
+				// 역슬레시 제거하기
+				contextPath = contextPath.replace("\\", "");
+				
+				let contextPath2="[(@{/})]";
+				
+				function deleteConfirm(){
+					
+					const isDelete=confirm("이 글을 삭제 하겠습니까?");
+					if(isDelete){
+						//javascript 를 이용해서 페이지 이동 시키기 
+						location.href=contextPath+"cafe/delete?num=[[${dto.num}]]";
+					}
+				}
+			</script>
+		</th:block>
+		
+		<h4>댓글을 입력해 주세요</h4>
+		<!-- 원글에 댓글을 작성할 폼 -->	
+		<form class="comment-form" th:action="@{/cafe/comment_insert}" method="post">
+			<!-- 원글의 글번호가 댓글의 ref_group 번호가 된다. -->
+			<input type="hidden" name="ref_group" th:value="${dto.num}"/>
+			<!-- 원글의 작성자가 댓글의 대상자가 된다. -->
+			<input type="hidden" name="target_id" th:value="${dto.writer}"/>
+			<textarea name="content">[[${session.userName == null ?
+				 "댓글 작성을 위해 로그인이 필요합니다" : ""}]]</textarea>
+			<button type="submit">등록</button>
+		</form>
+		
+		<!-- 댓글 목록 -->
+		<div class="comments">
+			<ul>
+				<li th:each="tmp:${commentList}">
+					<dl>
+						<dt>
+							<th:block th:if="${tmp.profile == null}">
+								<svg class="profile-image" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+								  <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+								  <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
+								</svg>
+							</th:block>
+							<th:block th:unless="${tmp.profile == null}">
+								<img class="profile-image" th:src="@{/upload/images/{name}(name=${tmp.profile})}">
+							</th:block>
+							<!-- 댓글 작성자 -->
+							<span th:text="${tmp.writer}"></span>
+							<!-- 댓글 대상자를 조건부로 출력 (대댓글에만 출력) -->
+							<th:block th:if="${tmp.num ne tmp.comment_group}">
+								@<i th:text="${tmp.target_id}"></i>
+							</th:block>
+							<!-- 댓글 작성일자 -->
+							<small th:text="${tmp.regdate}"></small>
+							<!-- 답글 링크 -->
+							<a th:attr="data-num=${tmp.num}" class="reply-link" href="javascript:">답글</a>
+						</dt>
+						<dd>
+							<pre>[[${tmp.content}]]</pre>
+						</dd>
+					</dl>
+					<!-- 댓글의 댓글 작성할 폼 미리 출력하기 -->
+					<form th:id="'reForm'+${tmp.num}" class="re-insert-form" 
+						th:action="@{/cafe/comment_insert}" method="post">
+						<input type="hidden" name="ref_group" th:value="${dto.num }"/>
+						<input type="hidden" name="target_id" th:value="${tmp.writer }"/>
+						<input type="hidden" name="comment_group" th:value="${tmp.comment_group }"/>
+						<textarea name="content"></textarea>
+						<button type="submit">등록</button>
+					</form>
+				</li>
+			</ul>
+		</div>
+		
+		<script>
+			//클라이언트가 로그인 했는지 여부를 javascript 변수에 담아 놓고 필요한 처리를 한다.
+			const isLogin = [[${session.userName == null ? false:true}]];
+			//원글에 댓글달기 폼에 이벤트 submit 이벤트 발생했을때 실행할 함수 등록
+			document.querySelector(".comment-form").addEventListener("submit", (e)=>{
+				if(!isLogin){
+					e.preventDefault();//폼 전송 막기
+					alert("로그인이 필요 합니다");
+					location.href="[[@{/}]]user/loginform";
+				}
+			});
+			
+			addReplyListener(".reply-link");
+			
+			
+			function addReplyListener(selector){
+				
+				//답글 링크에 대한 처리 
+				const replyLinks=document.querySelectorAll(selector);
+				//반복문 돌면서 모든 링크에 이벤트 리스너 함수 등록하기 
+				for(let i=0; i<replyLinks.length; i++){
+					
+					replyLinks[i].addEventListener("click", (e)=>{
+						
+						if(!isLogin){
+								e.preventDefault();//폼 전송 막기
+								alert("로그인이 필요 합니다");
+								location.href="[[@{/}]]user/loginform";
+						}
+						
+						//클릭한 a 요소의 data-num 속성의 value 값을 읽어온다. 
+						const num=e.target.getAttribute("data-num");
+						//보여주거나 숨길 form 의 참조값 얻어내기 
+						const form=document.querySelector("#reForm"+num);
+						//눌러진 링크의 innerText 읽어오기
+						const currentText=e.target.innerText;
+						if(currentText === "답글"){
+							//보이게 하기 
+							form.style.display="flex";
+							e.target.innerText="취소";  //링크의 innerText는 취소로
+						}else if(currentText === "취소"){
+							form.style.display="none";
+							e.target.innerText="답글";
+						}	
+					});
+				}
+			}
+			
+		</script>
+	</div>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
